@@ -1,0 +1,15 @@
+#!/bin/csh
+#AUTOMATIC GENERATION OF MOVIE FILES FOR CHIMERA FROM SAV FILE.
+
+
+mkdir $PWD/${argv[1]}.out
+
+cd $PWD/${argv[1]}.out 
+/bin/cp $HOME/software/myscripts/movie.py ./
+/bin/cp ../${argv[1]} ./moviein
+python movie.py
+/bin/cp movieout ../${argv[1]}-movie.pdb
+cd ..
+/bin/rm -r $PWD/${argv[1]}.out
+exit
+

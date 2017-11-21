@@ -1,0 +1,30 @@
+Zmatrix Setup:
+
+Use xANHZ to automate zmatrix setup. (Usage = ./xANHZ [zmat_name])
+
+Prior to xANHZ use, the residue number in the original zmatrix must
+be updated to reflect what type of atom that atom should ultimately
+become: either an ideal sp3 or sp2 dummy atom.
+
+Change residue number to "2" to indicate that the atom should be sp2
+Change residue number to "3" to indicate that the atom should be sp3
+
+xANHZ will output [zmat].Q.z & [zmat].LJ.z files.  ".Q.z" is ready 
+for use in Q-aq/gas.  ".LJ.z" is ready for use in LJ-aq/gas.  In 
+".LJ.z", the final atom types should be designated as D3 (sp2 atom)
+or DM (sp3 atom).
+
+Three examples are included: benzene, acetone, and methanol.  In 
+each case, notice the residue number for each atom in the zmatrix.
+
+[zmat].z = original zmatrix (with residue number = 2 or 3)
+[zmat].Q.z & [zmat].LJ.z = output zmats by xANHZ
+
+
+xANHZ can only be used on molecules containing 50 atoms or less.
+xANHZ currently assumes that the input zmatrix contains CM1A charges.
+(which means there's assigned charges and LJ parameters in the bottom
+of zmat.)
+If this is not the case, uncomment the appropriate lines in xANHZ.
+
+

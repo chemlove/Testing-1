@@ -1,0 +1,87 @@
+#!/usr/bin/perl
+
+use 5.010;
+
+# SOS-MOLECULAR ANNIHILATION COMBO SPECIFIC
+# Script to collect Delta G values + STD-Devs from FEP sum files
+# Data is collected and tabulated much like xPMFDELG outputs
+#
+#       Usage: script *sum*
+#
+
+# *sum* files are stored in @ARGV; Search through each file:
+foreach $arg (@ARGV) {
+    open LINES, '<', "$arg";
+    @sosLines = grep /DelSOS ./, <LINES>;
+    push @sosTotalLines, @sosLines;
+    close LINES;
+}
+
+foreach $arg (@ARGV) {
+    open LINES, '<', "$arg";
+    @dwsLines = grep /DeltaG ./, <LINES>;
+    push @dwsTotalLines, @dwsLines;
+    close LINES;
+}
+
+# Remove last line from sosTotalLines and add on last line from dwsTotalLines
+pop @sosTotalLines;
+$lastLine = pop @dwsTotalLines;
+push @sosTotalLines, $lastLine;
+
+# DEBUG - prints @sosTotalLines array
+# foreach $line (@sosTotalLines) {
+#   print $line;
+# }
+
+
+# Split off desired data from @sosTotalLines
+foreach (@sosTotalLines) {
+    $RC    = (split /\s+/)[3];
+    $delG  = (split /\s+/)[7];
+    $Dev   = (split /\s+/)[9];
+
+    push @RC  , $RC;
+    push @delG, $delG;
+    push @Dev , $Dev;
+}
+
+# Calculate uncertainies (dev):
+$devSum = 0;
+foreach $uncert (@Dev) {
+    $uncert_sq = $uncert * $uncert;
+    $devSum += $uncert_sq;
+}
+$uncert_final = sqrt($devSum);
+
+# Calculate DeltaG Sum-Totals:
+$delGSumTotal = 0;
+foreach $dG (@delG) {
+    $delGSumTotal += $dG;
+}
+
+
+# Print out tabulated results:
+my $filename = 'sumout';
+open(my $fh, '>', $filename) or die "Could not open file '$filename' $!";
+
+printf $fh "%6s%11s%7s%7s\n", "RC", "Delta_G", "Sigma", "Sum";
+
+
+for ($i = 1; $i < @sosTotalLines; $i++) {
+    $sum += $delG[$i-1];
+    printf $fh "%8.3f%8.3f%8.3f%8.3f\n", $RC[$i], $delG[$i-1], $Dev[$i-1], $sum;
+}
+
+printf $fh "%8.3f%8.3f%8.3f%8.3f\n", 1.0, $delG[-1], $Dev[-1], $sum + $delG[-1];
+
+print $fh "----COMBO----(" . @delG . " items)----SOS & DWS----\n";
+printf $fh "Total Delta_G Sum = %8.3f;  Total Uncertainty = %8.3f\n", $delGSumTotal, $uncert_final;
+close $fh;
+print "Total Delta_G Sum = ", $delGSumTotal;
+print "\n";
+print "Total Uncertainty =", $uncert_final;
+print "\n";
+print "Done\n";
+#######
+

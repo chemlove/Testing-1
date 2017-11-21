@@ -1,0 +1,14 @@
+#!/bin/csh
+
+if (-e delg) rm delg  
+awk '/Geometrical/ {getline a; getline b; print $1, $2, b > "delg"}' d001otavg 
+
+grep "DeltaG" *sum* >>delg
+
+
+grep 'Geometrical Variations' delg |awk '{print  $5,$6}' > newdelg
+
+awk '{print $4,$6,$8,$10}' delg|sed 's/)/ /g'|sed '/[a-z]/d'|sed '1d' >> newdelg
+
+python ~/software/myscripts/plotpmf.py
+

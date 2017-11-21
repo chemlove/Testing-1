@@ -1,0 +1,5 @@
+#!/bin/csh
+if (-e posout) rm posout
+grep 'ATOM      1 He00' f*plt* >>posout
+grep 'ATOM      3  N02' f*plt* >>posout
+grep 'ATOM     18 He0H' f*plt* >>posout

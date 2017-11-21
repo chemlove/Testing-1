@@ -1,0 +1,14 @@
+#!/bin/csh
+
+if (-e sumout) rm sumout
+grep "DeltaG" d*sum* >>delg
+cp delg delgsum
+#grep "DelSOS" d*sum >>delgsum
+$BOSSdir/miscexec/sumdelg
+rm delg delgsum
+
+grep "Accepted Volume Moves" d*ot* >>sumout
+grep "NACCPT" d*sum* >>sumout
+
+grep "Attempts/Accepts" *sum* >>sumout
+

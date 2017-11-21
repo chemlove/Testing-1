@@ -1,0 +1,44 @@
+#!/bin/csh
+#
+# quick script to set up ANH suitable zmatrices
+# usage: XANHZ zmat
+# SP2 and SP3 atom descriptions should have been
+# entered in the zmatrix "Residue Number" field
+#
+# Zmatrix compatability limited to 49 real atoms
+#
+# Steps:
+# 1) Obtain CM1A charges with AM1SPcmd
+# 2) Expand Zmat with SPMcmd
+# 3) Call ANH prog. to set up zmat specifics
+
+if (!($?BOSSdir)) then
+   echo "BOSSdir has not been defined; please see README"
+   exit (-1)
+endif
+
+mkdir $PWD/${argv[1]}.out
+cd $PWD/${argv[1]}.out
+if (-e optzmat) rm optzmat
+cp ../${argv[1]}.z ./optzmat
+cp $HOME/software/myscripts/QLJAUTO.out ./
+# Obtain CM1A charges (if necessary)
+# csh $BOSSdir/scripts/AM1SPcmd >& log
+# cp sum optzmat
+
+# Expand the zmatrix to remove automatic descriptions
+  csh $BOSSdir/scripts/SPMcmd >& log
+# cp optzmat optzmat.z
+# ./xSPM optzmat
+# rm optmzat.z
+cp sum optzmat
+
+# Make new zmatrices .Q. and .LJ.
+QLJAUTO.out
+mv q-zmat ${argv[1]}_Q.z
+mv lj-zmat ${argv[1]}_LJ.z
+rm optzmat
+cp * ../
+cd ..
+rm -r $PWD/${argv[1]}.out
+exit

@@ -1,0 +1,20 @@
+#!/bin/bash
+if [ -e sum ]; then
+rm sum out log plt.pdb slvzmat
+echo "opt files removed"
+fi
+
+#if [ -e *.q.e* ]; then
+ rm *q.e* 
+echo "e queues removed"
+#fi
+
+#if [ -e *.q.o* ]; then
+ rm *q.o* 
+echo "o queues removed"
+#fi
+ 
+ rm *.q*
+echo "job's done!"
+
+exit
